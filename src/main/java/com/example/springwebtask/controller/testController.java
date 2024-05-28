@@ -53,7 +53,8 @@ public class testController {
         }
     }
     @GetMapping("/menu")
-    public String menu(@RequestParam(name = "keyword",defaultValue = "") String find, BindingResult bindingResult,Model model) {
+    public String menu(@RequestParam(name = "keyword",defaultValue = "") String find,Model model) {
+        System.out.println("aaaaaaaa");
         var list = productService.findByName(find);
         model.addAttribute("length",list.size());
         model.addAttribute("products",list);
