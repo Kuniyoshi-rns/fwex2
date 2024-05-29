@@ -1,5 +1,6 @@
 function openModal() {
     let gray_out = document.getElementById("fadeLayer");
+    console.log("aaaaaaaaaaaaaaaaaaaaa");
     gray_out.style.visibility = "visible";
     setTimeout(addClass, 200);
 }
