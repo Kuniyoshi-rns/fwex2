@@ -12,11 +12,11 @@
 
     <hr>
 
-    <div class="btn-area">
+    <div class="btn-area" id="admin-btn">
       <div class="btn"><a class="basic-btn regist" href="/insert">新規登録</a></div>
       <div class="btn"><a class="basic-btn regist" href="category.html">カテゴリ管理</a></div>
     </div>
-    <p>成功メッセージ</p>
+    <p>[[ ${successInfo} ]]</p>
     <form method="get" action="#" class="search-form">
       <div class="order">
         <select name="order" class="base-text">
@@ -145,6 +145,16 @@
 <!--      </tbody>-->
 <!--    </table>-->
   </div>
+
+  <script th:inline="javascript">
+    var role = [[ ${session.user.role} ]]
+    if(role === 1){
+      document.getElementById('admin-btn').style.visibility = 'visible'
+    }else{
+      document.getElementById('admin-btn').style.visibility = 'hidden'
+    }
+  </script>
+
   <footer></footer>
 
 </body>

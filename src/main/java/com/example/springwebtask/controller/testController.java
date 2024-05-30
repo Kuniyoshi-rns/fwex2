@@ -2,6 +2,7 @@ package com.example.springwebtask.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import com.example.springwebtask.entity.Product;
 import com.example.springwebtask.form.LoginForm;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class testController {
+
+    private final String[] infoList = {"","登録が完了しました","削除に成功しました","更新処理が完了しました"};
+    private int successCheck = 0;//0:何もなし　1:登録　2:削除　3:更新
 
     @Autowired
     IUserService userService;
@@ -39,7 +43,6 @@ public class testController {
 
         // バリデーション
         if(bindingResult.hasErrors()) {
-            System.out.println(loginForm);
             return "index";
         }else {
             var user = userService.findByLoginForm(loginForm);
@@ -54,15 +57,18 @@ public class testController {
     }
     @GetMapping("/menu")
     public String menu(@RequestParam(name = "keyword",defaultValue = "") String find,Model model) {
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaa");
+        if(session.getAttribute("user") == null){
+            return "redirect:/index";
+        }
         var list = productService.findByName(find);
         model.addAttribute("products",list);
+        model.addAttribute("successInfo",infoList[successCheck]);
+        successCheck = 0;
         return "menu";
     }
 
     @GetMapping("/insert")
     public String gInsert(@ModelAttribute("productForm") NewProductForm productForm, Model model){
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaa");
         var list = categoryService.findAll();
         model.addAttribute("categories",list);
         return "insert";
@@ -79,12 +85,12 @@ public class testController {
                 var nowTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:dd");
                 String time = nowTime.format(LocalDateTime.now());
                 productService.insert(productForm,time);
+                successCheck=1;
                 return "redirect:/menu";
             }catch(Exception e){
                 var list = categoryService.findAll();
                 model.addAttribute("categories",list);
                 model.addAttribute("errorMes","商品IDが重複しています");
-                System.out.println("重複");
                 return "insert";
             }
         }
@@ -106,7 +112,6 @@ public class testController {
         productForm.setDescription(product.description());
         productForm.setImgPath(product.image_path());
 
-        System.out.println(productForm);
 
         var list = categoryService.findAll();
         model.addAttribute("categories",list);
@@ -115,7 +120,6 @@ public class testController {
 
     @PostMapping("/update/{id}")
     public String pUpdate(@PathVariable("id") int id, @Validated @ModelAttribute("productForm") NewProductForm productForm,BindingResult bindingResult,Model model){
-        System.out.println(productForm);
 
         if(bindingResult.hasErrors()){
             var list = categoryService.findAll();
@@ -123,19 +127,18 @@ public class testController {
             return "updateInput";
         }
         else {
-            System.out.println("バリデーションなし");
+
             var product = productService.findById(id);
             try {
                 var nowTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:dd");
                 String time = nowTime.format(LocalDateTime.now());
                 productService.update(productForm,time,id);
-                System.out.println(productForm+time+id);
+                successCheck = 3;
                 return "redirect:/menu";
             }catch (Exception e){
                 var list = categoryService.findAll();
                 model.addAttribute("categories",list);
                 model.addAttribute("errorMes","商品IDが重複しています");
-                System.out.println("重複");
                 return "updateInput";
             }
         }
@@ -144,6 +147,13 @@ public class testController {
     @GetMapping("/remove/{id}")
     public String remove(@PathVariable("id") int id){
         productService.delete(id);
+        successCheck = 2;
         return "redirect:/menu";
+    }
+
+    @GetMapping("/logout")
+    public String logout(){
+        session.invalidate();
+        return "logout";
     }
 }
