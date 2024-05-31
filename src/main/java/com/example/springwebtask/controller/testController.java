@@ -2,7 +2,7 @@ package com.example.springwebtask.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.example.springwebtask.entity.Product;
 import com.example.springwebtask.form.LoginForm;
@@ -56,12 +56,29 @@ public class testController {
         }
     }
     @GetMapping("/menu")
-    public String menu(@RequestParam(name = "keyword",defaultValue = "") String find,Model model) {
+    public String menu(@RequestParam(name = "keyword",defaultValue = "") String find,@RequestParam(name="order",defaultValue = "並び替え") String order,Model model) {
         if(session.getAttribute("user") == null){
             return "redirect:/index";
         }
-        var list = productService.findByName(find);
-        model.addAttribute("products",list);
+        find = find.replaceAll("　"," ");
+        System.out.println(find);
+        var findList = new ArrayList<String>(Arrays.asList(find.split(" ",0)));
+        List<Product> productList;
+        if(findList.isEmpty()){
+            productList = productService.findAll();
+        }else {
+            productList = productService.multiFind(findList);
+        }
+        switch (order){
+            case "商品ID：降順" -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::product_id).reversed()).toList());
+            case "カテゴリ：昇順" -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::category_id)).toList());
+            case "カテゴリ：降順" -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::category_id).reversed()).toList());
+            case "単価：安い順" -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::price)).toList());
+            case "単価：高い順" -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::price).reversed()).toList());
+            default -> model.addAttribute("products",productList.stream().sorted(Comparator.comparing(Product::product_id)).toList());
+        }
+
+//        model.addAttribute("products",productList);
         model.addAttribute("successInfo",infoList[successCheck]);
         successCheck = 0;
         return "menu";
@@ -105,7 +122,7 @@ public class testController {
         var product = productService.findById(id);
         productForm.setProductId(product.product_id());
         productForm.setProductName(product.name());
-        productForm.setCategory(product.category());
+        productForm.setCategory(product.category_name());
         productForm.setPrice(String.valueOf(product.price()));
         productForm.setDescription(product.description());
         productForm.setImgPath(product.image_path());

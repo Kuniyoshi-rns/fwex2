@@ -10,6 +10,8 @@ public interface IProductService {
 
     public List<Product> findByName(String find);
 
+    List<Product> findByCategory(String find);
+
     public Product findById(int id);
 
     public void insert(NewProductForm productForm);
@@ -17,4 +19,6 @@ public interface IProductService {
     public void update(NewProductForm productForm,int id);
 
     public void delete(int id);
+
+    public List<Product> multiFind(List<String> findList);
 }

@@ -18,15 +18,14 @@ public class ProductRepository implements IProductRepository{
 
     @Override
     public List<Product> findAll() {
-        return jdbcTemplate.query("select products.id,product_id,categories.name category,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id order by id",new DataClassRowMapper<>(Product.class));
+        return jdbcTemplate.query("select products.id,product_id,categories.name category_name,categories.id category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id",new DataClassRowMapper<>(Product.class));
     }
 
     @Override
     public List<Product> findByName(String find) {
         var param = new MapSqlParameterSource();
-        param.addValue("find",find);
         param.addValue("likeFind","%"+find+"%");
-        return jdbcTemplate.query("select products.id,product_id,categories.name category,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE products.name LIKE :likeFind ORDER BY products.name = :find DESC, id",param,new DataClassRowMapper<>(Product.class));
+        return jdbcTemplate.query("select products.id,product_id,categories.name category_name,categories.id category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE products.name LIKE :likeFind",param,new DataClassRowMapper<>(Product.class));
     }
 
     @Override
@@ -35,6 +34,13 @@ public class ProductRepository implements IProductRepository{
         param.addValue("id",id);
         var list = jdbcTemplate.query("select products.id,product_id,categories.name category,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE products.id = :id",param,new DataClassRowMapper<>(Product.class));
         return list.get(0);
+    }
+
+    @Override
+    public List<Product> findByCategory(String find) {
+        var param = new MapSqlParameterSource();
+        param.addValue("likeFind","%"+find+"%");
+        return jdbcTemplate.query("select products.id,product_id,categories.name category_name,categories.id category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE categories.name like :likeFind",param,new DataClassRowMapper<>(Product.class));
     }
 
     @Override
@@ -73,4 +79,5 @@ public class ProductRepository implements IProductRepository{
         param.addValue("id",id);
         jdbcTemplate.update("delete from products where id = :id",param);
     }
+
 }

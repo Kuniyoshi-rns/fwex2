@@ -6,7 +6,9 @@ import com.example.springwebtask.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductService implements IProductService{
@@ -22,6 +24,11 @@ public class ProductService implements IProductService{
     @Override
     public List<Product> findByName(String find) {
         return productRepository.findByName(find);
+    }
+
+    @Override
+    public List<Product> findByCategory(String find) {
+        return productRepository.findByCategory(find);
     }
 
     @Override
@@ -42,5 +49,15 @@ public class ProductService implements IProductService{
     @Override
     public void delete(int id) {
         productRepository.delete(id);
+    }
+
+    @Override
+    public List<Product> multiFind(List<String> findList){
+        Set<Product> set = new HashSet<>();
+        for(var find:findList){
+            set.addAll(productRepository.findByName(find));
+            set.addAll(productRepository.findByCategory(find));
+        }
+        return set.stream().toList();
     }
 }

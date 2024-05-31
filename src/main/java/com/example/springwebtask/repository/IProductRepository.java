@@ -10,6 +10,8 @@ public interface IProductRepository {
 
     List<Product> findByName(String find);
 
+    List<Product> findByCategory(String find);
+
     Product findById(int id);
 
     void insert(NewProductForm productForm);
