@@ -30,13 +30,13 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public void insert(NewProductForm productForm,String time) {
-        productRepository.insert(productForm,time);
+    public void insert(NewProductForm productForm) {
+        productRepository.insert(productForm);
     }
 
     @Override
-    public void update(NewProductForm productForm, String time, int id) {
-        productRepository.update(productForm,time,id);
+    public void update(NewProductForm productForm,int id) {
+        productRepository.update(productForm,id);
     }
 
     @Override

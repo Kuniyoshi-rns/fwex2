@@ -12,9 +12,9 @@ public interface IProductService {
 
     public Product findById(int id);
 
-    public void insert(NewProductForm productForm,String time);
+    public void insert(NewProductForm productForm);
 
-    public void update(NewProductForm productForm, String time, int id);
+    public void update(NewProductForm productForm,int id);
 
     public void delete(int id);
 }

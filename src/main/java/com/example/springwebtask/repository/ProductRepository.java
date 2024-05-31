@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -39,7 +38,7 @@ public class ProductRepository implements IProductRepository{
     }
 
     @Override
-    public void insert(NewProductForm productForm,String time) {
+    public void insert(NewProductForm productForm) {
         var param = new MapSqlParameterSource();
         param.addValue("product_id",productForm.getProductId());
         param.addValue("name",productForm.getProductName());
@@ -48,13 +47,12 @@ public class ProductRepository implements IProductRepository{
         System.out.println(productForm.getCategoryId());
         param.addValue("description",productForm.getDescription());
         param.addValue("image_path",productForm.getImgPath());
-        param.addValue("time", Timestamp.valueOf(time));
         jdbcTemplate.update("insert into products(product_id,category_id,name,price,image_path,description,created_at,updated_at)" +
-                " values(:product_id,:category_id,:name,:price,:image_path,:description,:time,:time)",param);
+                " values(:product_id,:category_id,:name,:price,:image_path,:description,now(),now())",param);
     }
 
     @Override
-    public void update(NewProductForm productForm, String time, int id) {
+    public void update(NewProductForm productForm, int id) {
         var param = new MapSqlParameterSource();
         System.out.println(id);
         param.addValue("id",id);
@@ -65,8 +63,7 @@ public class ProductRepository implements IProductRepository{
         System.out.println(productForm.getCategoryId());
         param.addValue("description",productForm.getDescription());
         param.addValue("image_path",productForm.getImgPath());
-        param.addValue("time", Timestamp.valueOf(time));
-        jdbcTemplate.update("update products set product_id=:product_id,name=:name,category_id=:category_id, price=:price, description=:description, updated_at=:time where id = :id",param);
+        jdbcTemplate.update("update products set product_id=:product_id,name=:name,category_id=:category_id, price=:price, description=:description, updated_at=now() where id = :id",param);
     }
 
     @Override

@@ -82,9 +82,7 @@ public class testController {
             return "insert";
         }else{
             try{
-                var nowTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:dd");
-                String time = nowTime.format(LocalDateTime.now());
-                productService.insert(productForm,time);
+                productService.insert(productForm);
                 successCheck=1;
                 return "redirect:/menu";
             }catch(Exception e){
@@ -130,9 +128,7 @@ public class testController {
 
             var product = productService.findById(id);
             try {
-                var nowTime = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:dd");
-                String time = nowTime.format(LocalDateTime.now());
-                productService.update(productForm,time,id);
+                productService.update(productForm,id);
                 successCheck = 3;
                 return "redirect:/menu";
             }catch (Exception e){

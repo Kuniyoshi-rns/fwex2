@@ -12,9 +12,9 @@ public interface IProductRepository {
 
     Product findById(int id);
 
-    void insert(NewProductForm productForm,String time);
+    void insert(NewProductForm productForm);
 
-    void update(NewProductForm productForm,String time,int id);
+    void update(NewProductForm productForm,int id);
 
     void delete(int id);
 }

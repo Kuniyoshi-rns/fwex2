@@ -12,7 +12,7 @@
 
     <hr>
 
-    <div class="btn-area" id="admin-btn">
+    <div th:if="${session.user.role} == 1" class="btn-area" id="admin-btn">
       <div class="btn"><a class="basic-btn regist" href="/insert">新規登録</a></div>
       <div class="btn"><a class="basic-btn regist" href="category.html">カテゴリ管理</a></div>
     </div>
@@ -145,15 +145,6 @@
 <!--      </tbody>-->
 <!--    </table>-->
   </div>
-
-  <script th:inline="javascript">
-    var role = [[ ${session.user.role} ]]
-    if(role === 1){
-      document.getElementById('admin-btn').style.visibility = 'visible'
-    }else{
-      document.getElementById('admin-btn').style.visibility = 'hidden'
-    }
-  </script>
 
   <footer></footer>
 

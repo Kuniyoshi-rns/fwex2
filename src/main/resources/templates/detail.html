@@ -44,7 +44,7 @@
         </fieldset>
         <div>
           <div class="btns">
-            <span id="admin-btn">
+            <span th:if="${session.user.role} == 1" id="admin-btn">
               <input type="button" onclick="openModal()" value="削除" class="basic-btn">
               <input type="button" th:onclick="|location.href='../update/__${product.id}__'|" value="編集" class="basic-btn">
             </span>
@@ -63,13 +63,6 @@
   </div>
   <div id="fadeLayer"></div>
   <script src="../js/commons.js"></script>
-  <script th:inline="javascript">
-    var role = [[ ${session.user.role} ]]
-    if(role === 1){
-      document.getElementById('admin-btn').style.visibility = 'visible'
-    }else{
-      document.getElementById('admin-btn').style.visibility = 'hidden'
-    }
-  </script>
+
 </body>
 </html>
