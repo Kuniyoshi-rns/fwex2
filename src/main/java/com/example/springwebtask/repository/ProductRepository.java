@@ -32,7 +32,7 @@ public class ProductRepository implements IProductRepository{
     public Product findById(int id) {
         var param = new MapSqlParameterSource();
         param.addValue("id",id);
-        var list = jdbcTemplate.query("select products.id,product_id,categories.name category,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE products.id = :id",param,new DataClassRowMapper<>(Product.class));
+        var list = jdbcTemplate.query("select products.id,product_id,categories.name category_name,categories.id category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE products.id = :id",param,new DataClassRowMapper<>(Product.class));
         return list.get(0);
     }
 
@@ -40,7 +40,7 @@ public class ProductRepository implements IProductRepository{
     public List<Product> findByCategory(String find) {
         var param = new MapSqlParameterSource();
         param.addValue("likeFind","%"+find+"%");
-        return jdbcTemplate.query("select products.id,product_id,categories.name category_name,categories.id category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE categories.name like :likeFind",param,new DataClassRowMapper<>(Product.class));
+        return jdbcTemplate.query("select products.id,product_id,categories.name category_name,category_id,products.name,price,image_path,description,products.created_at,products.updated_at from products join  categories on category_id=categories.id WHERE categories.name like :likeFind",param,new DataClassRowMapper<>(Product.class));
     }
 
     @Override
